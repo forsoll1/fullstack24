@@ -1,2 +1,7 @@
-flowchart TD
-    Start --> Stop
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
