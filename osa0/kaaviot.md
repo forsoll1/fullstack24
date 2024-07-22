@@ -15,7 +15,7 @@ graph TD;
 ## 0.5: Single Page App
 ```mermaid
 graph TD;
-    A[Selain]--> |Selain tekee GET-pyynnön em. osoitteeseen| B[Palvelin];
+    A[Selain]--> |Selain tekee GET-pyynnön osoitteeseen https://studies.cs.helsinki.fi/exampleapp/spa| B[Palvelin];
     B--> |Palvelin vastaa statuskoodilla 200 ja lähettää sivun HTML-sisällön| C[Selain];
     C--> |HTML-tiedosto sisältää viitteen CSS-tiedostoon, joten selain pyytää sitä GET-metodilla palvelimelta|D[Palvelin];
     C--> |HTML-tiedosto sisältää viitteen js-tiedostoon, joten selain pyytää sitä GET-metodilla palvelimelta|D;
