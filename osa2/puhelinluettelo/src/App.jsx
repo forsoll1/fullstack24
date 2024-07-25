@@ -32,6 +32,26 @@ const Filter = ({handleFilterInput, filterText}) => {
   )
 }
 
+const Notification = ({ notification }) => {
+  if(notification === null){
+    return null
+  }
+  if(notification.code === 1){
+    return (
+      <div className="error">
+        {notification.message}
+      </div>
+    )
+  }
+  if(notification.code === 0){
+    return (
+      <div className="success">
+        {notification.message}
+      </div>
+    )
+  }
+}
+
 const App = () => {
 
   const [persons, setPersons] = useState([])
@@ -39,6 +59,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
   const [filteredPersons, setFilteredPersons] = useState([])
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     personService
@@ -72,6 +93,14 @@ const App = () => {
         const newPersons = persons.map(person => person.id !== response.data.id ? person : response.data)
         setPersons(newPersons)
         setFilteredPersons(newPersons)
+        successMessage(`Successfully modified ${response.data.name}'s number`)
+      })
+      .catch(error => {
+        errorMessage(`Couldn't edit number, phonebook entry does not exist`)
+        const newPersons = persons.filter(p => p.id !== existingPerson.id)
+        setPersons(newPersons)
+        setFilteredPersons(newPersons)
+        console.log('ERROR', error)
       })
     }
     if(!existingPerson){
@@ -85,6 +114,7 @@ const App = () => {
         const newPersons = persons.concat(response.data)
         setPersons(newPersons)
         setFilteredPersons(newPersons)
+        successMessage(`Successfully added entry for ${response.data.name}`)
       })
       setFilterText('')
     }
@@ -101,13 +131,37 @@ const App = () => {
         const newPersons = persons.filter(p => p.id !== response.data.id)
         setPersons(newPersons)
         setFilteredPersons(newPersons)
+        successMessage(`Successfully deleted ${response.data.name}`)
+      })
+      .catch(error => {
+        errorMessage(`Couldn't delete phonebook entry, entry does not exist`)
+        const newPersons = persons.filter(p => p.id !== id)
+        setPersons(newPersons)
+        setFilteredPersons(newPersons)
+        console.log('ERROR', error)
       })
     }
+  }
+
+  const successMessage = (message) => {
+    notificationMessage(0,message)
+  }
+
+  const errorMessage = (message) => {
+    notificationMessage(1,message)
+  }
+
+  const notificationMessage = (code, message) => {
+    setNotification({code:code, message:message})
+    setTimeout(()=> {
+      setNotification(null)
+    }, 5000)    
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Filter handleFilterInput={handleFilterInput} filterText={filterText} />
       
       <h2>Add new number</h2>
